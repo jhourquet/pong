@@ -36,7 +36,7 @@ height = 600
 
 clay = (0xFF, 0x40, 0)
 
-ball_speed = [ -2, -2 ] #largeur | hauteur
+ball_speed = [ -2, -2 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
 
@@ -162,20 +162,41 @@ while True:
         racket2_coords.bottom = height-1
 
     #socket
+    #à faire serveur
     if serveur:
         data = s2.recv(1500)
         s2.send(data)
         decode = data.decode("utf-8")
+<<<<<<< HEAD
+=======
+
+        command = decode.split("$")
+        print(len(recv))
+        
+        for cmd in command:
+            msg = cmd.split(" ")
+            if msg[0] == "RACK":
+                pos = msg[1]
+                racket2_coords.top = pos
+                racket2_coords.bottom = pos-100
+            
+            # ball taille = 20 
+            elif msg[0] == "BALL":
+                ball_coords.top = msg[1]
+                ball_coords.bottom = msg[1] - 20
+                ball_coords.left = msg[2]
+                ball_coords.right = msg[2] +20
+
+>>>>>>> d1c4816e87ba5ce4c0ef03eb39278322057e4dfb
         if data == b'':
             break
             s2.close()
     else:
         reply = "$RACK " + str(racket2_coords.top) + '\n'
-        c.send(reply.encode())
         if ball_coords.left >= width/2 :
-            reply2 = "$BALL " + str(ball_coords.left) + " " + str(ball_coords.top) + '\n'
+            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left) + '\n'
             c.send(reply2.encode())
-        
+        c.send(reply.encode())
 
     # Racket reached racket position?
     if ball_coords.left <= 0:
@@ -197,7 +218,3 @@ while True:
 
     # sleep 10ms, since there is no need for more than 100Hz refresh :)
     pygame.time.delay(10)
-
-
-
- 
