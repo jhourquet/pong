@@ -70,7 +70,10 @@ else:
 # Pygame initialization
 pygame.init()
 screen = pygame.display.set_mode( (width, height) )
-
+if serveur :
+    pygame.display.set_caption('Serveur')
+else :
+    pygame.display.set_caption('Client')
 # Load resources
 ball = pygame.image.load("image/ball.png")
 ball_coords = ball.get_rect()
