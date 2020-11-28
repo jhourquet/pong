@@ -102,44 +102,32 @@ while True:
         # Check for racket movements
         elif e.type == pygame.KEYDOWN:
             if e.key == pygame.K_UP:
-                racket_speed[1] = -4
+                if serveur :
+                    racket_speed[1] = -4
+                else :
+                    racket2_speed[1] = -4
                 pass
             elif e.key == pygame.K_DOWN:
-                racket_speed[1] = 4
-                pass
-            if e.key == pygame.K_LEFT:
-                racket2_speed[1] = -4
-                pass
-            elif e.key == pygame.K_RIGHT:
-                racket2_speed[1] = 4
+                if serveur :
+                    racket_speed[1] = 4
+                else :
+                    racket2_speed[1] = 4
                 pass
 
         elif e.type == pygame.KEYUP:
             if e.key == pygame.K_UP:
-                racket_speed[1] = 0
+                if serveur :
+                    racket_speed[1] = 0
+                else :
+                    racket2_speed[1] = 0
                 pass
             elif e.key == pygame.K_DOWN:
-                racket_speed[1] = 0
-                pass
-            if e.key == pygame.K_LEFT:
-                racket2_speed[1] = 0
-                pass
-            elif e.key == pygame.K_RIGHT:
-                racket2_speed[1] = 0
+                if serveur :
+                    racket_speed[1] = 0
+                else :
+                    racket2_speed[1] = 0
                 pass
         
-    #socket
-    #à faire serveur
-    if serveur:
-        data = s2.recv(1500)
-        s2.send(data)
-        print(data.decode("utf -8"), end="")
-        if data == b'':
-            break
-            s2.close()
-    else:
-        reply = "salut"
-        c.send(reply.encode())
 
     # Move ball
     ball_coords = ball_coords.move(ball_speed)
@@ -172,6 +160,22 @@ while True:
         racket2_coords.top = 0
     elif racket2_coords.bottom >= height:
         racket2_coords.bottom = height-1
+
+    #socket
+    #à faire serveur
+    if serveur:
+        data = s2.recv(1500)
+        s2.send(data)
+        print(data.decode("utf -8"), end="")
+        if data == b'':
+            break
+            s2.close()
+    else:
+        reply = "$RACK " + str(racket2_coords.top) + '\n'
+        if ball_coords.left >= width/2 :
+            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left) + '\n'
+            c.send(reply2.encode())
+        c.send(reply.encode())
 
     # Racket reached racket position?
     if ball_coords.left <= 0:
