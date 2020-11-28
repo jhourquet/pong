@@ -27,6 +27,7 @@
 import sys
 import pygame
 import io
+import socket
 
 # Screen setup
 
@@ -39,9 +40,23 @@ ball_speed = [ -2, -2 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
 
+serveur = None
+
 # Ouverture du fichier
 if len(sys.argv) >= 2:
+    serveur = False
     print(sys.argv[1])
+else:
+    serveur = True
+    try:
+        s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM, 0)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('', 7777))
+        s.listen(1)
+        s2, addr = s.accept() # fonction bloquante
+    except Exception as e:
+        print("socket error:", e)
+        sys.exit(1)
 
 # Pygame initialization
 pygame.init()
@@ -98,7 +113,18 @@ while True:
             elif e.key == pygame.K_RIGHT:
                 racket2_speed[1] = 0
                 pass
-
+        
+        #socket
+        #à faire serveur
+        if serveur == True:
+            data = s2.recv(1500)
+            s2.send(data)
+            print(data.decode("utf -8"), end="")
+            if data == b'':
+                break
+                s2.close()
+        else:
+            #à faire client
         #else:
         #    print(e)
 
