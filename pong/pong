@@ -177,6 +177,7 @@ while True:
             msg = cmd.split(" ")
             if msg[0] == "RACK":
                 racket2_speed[1] = int(msg[1])
+                racket2_coords = racket2_coords.move(racket2_speed)
 
         if data == b'':
             break
