@@ -167,27 +167,6 @@ while True:
         data = s2.recv(1500)
         s2.send(data)
         decode = data.decode("utf-8")
-<<<<<<< HEAD
-=======
-
-        command = decode.split("$")
-        print(len(recv))
-        
-        for cmd in command:
-            msg = cmd.split(" ")
-            if msg[0] == "RACK":
-                pos = msg[1]
-                racket2_coords.top = pos
-                racket2_coords.bottom = pos-100
-            
-            # ball taille = 20 
-            elif msg[0] == "BALL":
-                ball_coords.top = msg[1]
-                ball_coords.bottom = msg[1] - 20
-                ball_coords.left = msg[2]
-                ball_coords.right = msg[2] +20
-
->>>>>>> d1c4816e87ba5ce4c0ef03eb39278322057e4dfb
         if data == b'':
             break
             s2.close()
