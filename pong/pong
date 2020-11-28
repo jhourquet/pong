@@ -36,6 +36,7 @@ clay = (0xFF, 0x40, 0)
 
 ball_speed = [ -2, -2 ]
 racket_speed = [ 0, 0 ]
+racket2_speed = [ 0, 0 ]
 
 # Pygame initialization
 pygame.init()
@@ -47,6 +48,9 @@ ball_coords = ball.get_rect()
 
 racket = pygame.image.load("image/racket.png")
 racket_coords = racket.get_rect()
+
+racket2 = pygame.image.load("image/racket.png")
+racket2_coords = racket2.get_rect()
 
 # Throw ball from center
 def throw():
@@ -78,6 +82,22 @@ while True:
                 racket_speed[1] = 0
                 pass
 
+        elif e.type == pygame.KEYDOWN:
+            if e.key == pygame.K_LEFT:
+                racket2_speed[1] = -4
+                pass
+            elif e.key == pygame.K_RIGHT:
+                racket2_speed[1] = 4
+                pass
+
+        elif e.type == pygame.KEYUP:
+            if e.key == pygame.K_LEFT:
+                racket2_speed[1] = 0
+                pass
+            elif e.key == pygame.K_RIGHT:
+                racket2_speed[1] = 0
+                pass
+
         #else:
         #    print(e)
 
@@ -101,6 +121,18 @@ while True:
     elif racket_coords.bottom >= height:
         racket_coords.bottom = height-1
 
+    # Move racket2
+    racket2_coords = racket2_coords.move(racket2_speed)
+    # Clip racket2 on court
+    if racket2_coords.left < width-37:
+        racket2_coords.left = width-37
+    elif racket2_coords.right > width:
+        racket2_coords.right = width
+    if racket2_coords.top < 0:
+        racket2_coords.top = 0
+    elif racket2_coords.bottom >= height:
+        racket2_coords.bottom = height-1
+
     # Racket reached racket position?
     if ball_coords.left <= 0:
         if ball_coords.bottom <= racket_coords.top or ball_coords.top >= racket_coords.bottom:
@@ -111,6 +143,7 @@ while True:
     screen.fill(clay)
     screen.blit(ball, ball_coords)
     screen.blit(racket, racket_coords)
+    screen.blit(racket2, racket2_coords)
     pygame.display.flip()
 
     # sleep 10ms, since there is no need for more than 100Hz refresh :)
