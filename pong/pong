@@ -26,6 +26,7 @@
 
 import sys
 import pygame
+import io
 
 # Screen setup
 
@@ -37,6 +38,10 @@ clay = (0xFF, 0x40, 0)
 ball_speed = [ -2, -2 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
+
+# Ouverture du fichier
+if len(sys.argv) >= 2:
+    print(sys.argv[1])
 
 # Pygame initialization
 pygame.init()
@@ -144,3 +149,7 @@ while True:
 
     # sleep 10ms, since there is no need for more than 100Hz refresh :)
     pygame.time.delay(10)
+
+
+
+ 
