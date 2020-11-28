@@ -36,7 +36,7 @@ height = 600
 
 clay = (0xFF, 0x40, 0)
 
-ball_speed = [ -2, -2 ]
+ball_speed = [ -2, -2 ] #largeur | hauteur
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
 
@@ -162,38 +162,34 @@ while True:
         racket2_coords.bottom = height-1
 
     #socket
-    #à faire serveur
     if serveur:
         data = s2.recv(1500)
         s2.send(data)
         decode = data.decode("utf-8")
 
-        command = decode.split("$")
-        print(len(recv))
+        command = decode.split("$") #split différents objet
         
         for cmd in command:
-            msg = cmd.split(" ")
+            msg = cmd.split(" ") #sépare les args
             if msg[0] == "RACK":
-                pos = msg[1]
-                racket2_coords.top = pos
-                racket2_coords.bottom = pos-100
+                racket2_speed[1] = int(msg[1]) - racket2_coords.top
+                racket2_coords = racket2_coords.move(racket2_speed)
             
             # ball taille = 20 
             elif msg[0] == "BALL":
-                ball_coords.top = msg[1]
-                ball_coords.bottom = msg[1] - 20
-                ball_coords.left = msg[2]
-                ball_coords.right = msg[2] +20
+                ball_speed[0] = int(msg[1]) - ball_coords.left
+                ball_speed[1] = int(msg[2]) - ball_coords.top
 
         if data == b'':
             break
             s2.close()
     else:
         reply = "$RACK " + str(racket2_coords.top) + '\n'
-        if ball_coords.left >= width/2 :
-            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left) + '\n'
-            c.send(reply2.encode())
         c.send(reply.encode())
+        if ball_coords.left >= width/2 :
+            reply2 = "$BALL " + str(ball_coords.left) + " " + str(ball_coords.top) + '\n'
+            c.send(reply2.encode())
+        
 
     # Racket reached racket position?
     if ball_coords.left <= 0:
