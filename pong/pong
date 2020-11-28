@@ -46,6 +46,15 @@ serveur = None
 if len(sys.argv) >= 2:
     serveur = False
     print(sys.argv[1])
+    try:
+        c = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        c.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        c.connect((sys.argv[1], 7777))
+        reply = "connecte"
+        c.send(reply.encode())
+    except Exception as e:
+        print("socket error:", e)
+        sys.exit(1)
 else:
     serveur = True
     try:
@@ -124,9 +133,8 @@ while True:
                 break
                 s2.close()
         else:
-            #à faire client
-        #else:
-        #    print(e)
+            reply = "salut"
+            c.send(reply.encode())
 
     # Move ball
     ball_coords = ball_coords.move(ball_speed)
