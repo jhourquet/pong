@@ -166,20 +166,6 @@ while True:
         data = s2.recv(1500)
         s2.send(data)
         decode = data.decode("utf-8")
-
-        command = decode.split("$") #split différents objet
-        
-        for cmd in command:
-            msg = cmd.split(" ") #sépare les args
-            if msg[0] == "RACK":
-                racket2_speed[1] = int(msg[1]) - racket2_coords.top
-                racket2_coords = racket2_coords.move(racket2_speed)
-            
-            # ball taille = 20 
-            elif msg[0] == "BALL":
-                ball_speed[0] = int(msg[1]) - ball_coords.left
-                ball_speed[1] = int(msg[2]) - ball_coords.top
-
         if data == b'':
             break
             s2.close()
