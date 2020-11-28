@@ -74,6 +74,8 @@ if serveur :
     pygame.display.set_caption('Serveur')
 else :
     pygame.display.set_caption('Client')
+
+
 # Load resources
 ball = pygame.image.load("image/ball.png")
 ball_coords = ball.get_rect()
@@ -126,18 +128,18 @@ while True:
                 racket2_speed[1] = 0
                 pass
         
-        #socket
-        #à faire serveur
-        if serveur == True:
-            data = s2.recv(1500)
-            s2.send(data)
-            print(data.decode("utf -8"), end="")
-            if data == b'':
-                break
-                s2.close()
-        else:
-            reply = "salut"
-            c.send(reply.encode())
+    #socket
+    #à faire serveur
+    if serveur:
+        data = s2.recv(1500)
+        s2.send(data)
+        print(data.decode("utf -8"), end="")
+        if data == b'':
+            break
+            s2.close()
+    else:
+        reply = "salut"
+        c.send(reply.encode())
 
     # Move ball
     ball_coords = ball_coords.move(ball_speed)
