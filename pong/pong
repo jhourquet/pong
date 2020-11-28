@@ -166,7 +166,25 @@ while True:
     if serveur:
         data = s2.recv(1500)
         s2.send(data)
-        print(data.decode("utf -8"), end="")
+        decode = data.decode("utf-8")
+
+        command = decode.split("$")
+        print(len(recv))
+        
+        for cmd in command:
+            msg = cmd.split(" ")
+            if msg[0] == "RACK":
+                pos = msg[1]
+                racket2_coords.top = pos
+                racket2_coords.bottom = pos-100
+            
+            # ball taille = 20 
+            elif msg[0] == "BALL":
+                ball_coords.top = msg[1]
+                ball_coords.bottom = msg[1] - 20
+                ball_coords.left = msg[2]
+                ball_coords.right = msg[2] +20
+
         if data == b'':
             break
             s2.close()
@@ -181,6 +199,11 @@ while True:
     if ball_coords.left <= 0:
         if ball_coords.bottom <= racket_coords.top or ball_coords.top >= racket_coords.bottom:
             print("lost!")
+            throw()
+
+    if ball_coords.right >= width:
+        if ball_coords.bottom <= racket2_coords.top or ball_coords.top >= racket2_coords.bottom:
+            print("win!")
             throw()
 
     # Display everything
