@@ -137,8 +137,13 @@ while True:
     if ball_coords.top < 0 or ball_coords.bottom >= height:
         ball_speed[1] = -ball_speed[1]
 
-    # Move racket
-    racket_coords = racket_coords.move(racket_speed)
+    if serveur :
+        # Move racket
+        racket_coords = racket_coords.move(racket_speed)
+    else :
+        # Move racket2
+        racket2_coords = racket2_coords.move(racket2_speed)
+
     # Clip racket on court
     if racket_coords.left < 0:
         racket_coords.left = 0
@@ -149,8 +154,6 @@ while True:
     elif racket_coords.bottom >= height:
         racket_coords.bottom = height-1
 
-    # Move racket2
-    racket2_coords = racket2_coords.move(racket2_speed)
     # Clip racket2 on court
     if racket2_coords.left < width-37:
         racket2_coords.left = width-37
