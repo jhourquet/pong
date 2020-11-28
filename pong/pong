@@ -50,8 +50,6 @@ if len(sys.argv) >= 2:
         c = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         c.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         c.connect((sys.argv[1], 7777))
-        reply = "connecte"
-        c.send(reply.encode())
     except Exception as e:
         print("socket error:", e)
         sys.exit(1)
@@ -165,10 +163,18 @@ while True:
         racket2_coords.bottom = height-1
 
     #socket
-    #à faire serveur
     if serveur:
+        #emission
+        reply = "$RACK " + str(racket_speed[1])
+        if ball_coords.left <= width/2 :
+            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left)
+            s2.send(reply2.encode())
+        s2.send(reply.encode())
+
+
+        #reception
         data = s2.recv(1500)
-        s2.send(data)
+        #s2.send(data)
         decode = data.decode("utf-8")
 
         command = decode.split("$")
@@ -181,13 +187,32 @@ while True:
 
         if data == b'':
             break
-            s2.close()        
+            s2.close()
+        
+    #client      
     else:
-        reply = "$RACK " + str(racket2_speed[1]) + '\n'
+        #emission
+        reply = "$RACK " + str(racket2_speed[1])
         if ball_coords.left >= width/2 :
-            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left) + '\n'
+            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left)
             c.send(reply2.encode())
         c.send(reply.encode())
+
+        #reception
+        data = c.recv(1500)
+        decode = data.decode("utf-8")
+
+        command = decode.split("$")
+
+        for cmd in command:
+            msg = cmd.split(" ")
+            if msg[0] == "RACK":
+                racket_speed[1] = int(msg[1])
+
+        if data == b'':
+            break
+            c.close()  
+
 
     # Racket reached racket position?
     if ball_coords.left <= 0:
