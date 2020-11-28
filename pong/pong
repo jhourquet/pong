@@ -73,16 +73,6 @@ while True:
             elif e.key == pygame.K_DOWN:
                 racket_speed[1] = 4
                 pass
-
-        elif e.type == pygame.KEYUP:
-            if e.key == pygame.K_UP:
-                racket_speed[1] = 0
-                pass
-            elif e.key == pygame.K_DOWN:
-                racket_speed[1] = 0
-                pass
-
-        elif e.type == pygame.KEYDOWN:
             if e.key == pygame.K_LEFT:
                 racket2_speed[1] = -4
                 pass
@@ -91,6 +81,12 @@ while True:
                 pass
 
         elif e.type == pygame.KEYUP:
+            if e.key == pygame.K_UP:
+                racket_speed[1] = 0
+                pass
+            elif e.key == pygame.K_DOWN:
+                racket_speed[1] = 0
+                pass
             if e.key == pygame.K_LEFT:
                 racket2_speed[1] = 0
                 pass
