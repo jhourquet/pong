@@ -36,7 +36,7 @@ height = 600
 
 clay = (0xFF, 0x40, 0)
 
-ball_speed = [ -2, -2 ]
+ball_speed = [ -3, -3 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
 
@@ -127,13 +127,14 @@ while True:
                 pass
         
 
-    # Move ball
-    ball_coords = ball_coords.move(ball_speed)
-    # Bounce ball on walls
-    if ball_coords.left < 0 or ball_coords.right >= width:
-        ball_speed[0] = -ball_speed[0]
-    if ball_coords.top < 0 or ball_coords.bottom >= height:
-        ball_speed[1] = -ball_speed[1]
+    if serveur :
+        # Move ball
+        ball_coords = ball_coords.move(ball_speed)
+        # Bounce ball on walls
+        if ball_coords.left < 0 or ball_coords.right >= width:
+            ball_speed[0] = -ball_speed[0]
+        if ball_coords.top < 0 or ball_coords.bottom >= height:
+            ball_speed[1] = -ball_speed[1]
 
     if serveur :
         # Move racket
@@ -165,25 +166,16 @@ while True:
     #socket
     if serveur:
         #emission
-        reply = "$RACK " + str(racket_speed[1])
-        if ball_coords.left <= width/2 :
-            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left)
-            s2.send(reply2.encode())
+        reply =  str(ball_coords.left) + ' ' + str(ball_coords.right) + ' ' + str(ball_coords.top) + ' ' + str(ball_coords.bottom) + ' ' + str(racket_coords.left) + ' ' + str(racket_coords.right) + ' ' + str(racket_coords.top) + ' ' + str(racket_coords.bottom)
         s2.send(reply.encode())
 
 
         #reception
         data = s2.recv(1500)
-        #s2.send(data)
-        decode = data.decode("utf-8")
+        pos_racket2 = data.decode("utf-8")
 
-        command = decode.split("$")
-
-        for cmd in command:
-            msg = cmd.split(" ")
-            if msg[0] == "RACK":
-                racket2_speed[1] = int(msg[1])
-                racket2_coords = racket2_coords.move(racket2_speed)
+        racket2_speed[1] = int(pos_racket2)
+        racket2_coords = racket2_coords.move(racket2_speed)
 
         if data == b'':
             break
@@ -192,23 +184,24 @@ while True:
     #client      
     else:
         #emission
-        reply = "$RACK " + str(racket2_speed[1])
-        if ball_coords.left >= width/2 :
-            reply2 = "$BALL " + str(ball_coords.top) + " " + str(ball_coords.left)
-            c.send(reply2.encode())
+        reply = str(racket2_speed[1])
         c.send(reply.encode())
 
         #reception
         data = c.recv(1500)
         decode = data.decode("utf-8")
 
-        command = decode.split("$")
+        positions = decode.split(" ")
 
-        for cmd in command:
-            msg = cmd.split(" ")
-            if msg[0] == "RACK":
-                racket_speed[1] = int(msg[1])
-                racket_coords = racket_coords.move(racket_speed)
+        ball_coords.left = int(positions[0])
+        ball_coords.right = int(positions[1])
+        ball_coords.top = int(positions[2])
+        ball_coords.bottom = int(positions[3])
+
+        racket_coords.left = int(positions[4])
+        racket_coords.right = int(positions[5])
+        racket_coords.top = int(positions[6])
+        racket_coords.bottom = int(positions[7])
 
         if data == b'':
             break
