@@ -36,9 +36,12 @@ height = 600
 
 clay = (0xFF, 0x40, 0)
 
-ball_speed = [ -3, -3 ]
+ball_speed = [ -4, -4 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
+
+score1 = 0
+score2 = 0
 
 serveur = None
 
@@ -72,6 +75,8 @@ if serveur :
     pygame.display.set_caption('Serveur')
 else :
     pygame.display.set_caption('Client')
+
+myfont = pygame.font.SysFont(None, 50)
 
 
 # Load resources
@@ -172,10 +177,14 @@ while True:
 
         #reception
         data = s2.recv(1500)
-        pos_racket2 = data.decode("utf-8")
+        decode = data.decode("utf-8")
 
-        racket2_speed[1] = int(pos_racket2)
-        racket2_coords = racket2_coords.move(racket2_speed)
+        pos_racket2 = decode.split(" ")
+
+        racket2_coords.left = int(pos_racket2[0])
+        racket2_coords.right = int(pos_racket2[1])
+        racket2_coords.top = int(pos_racket2[2])
+        racket2_coords.bottom = int(pos_racket2[3])
 
         if data == b'':
             break
@@ -184,7 +193,7 @@ while True:
     #client      
     else:
         #emission
-        reply = str(racket2_speed[1])
+        reply = str(racket2_coords.left) + ' ' + str(racket2_coords.right) + ' ' + str(racket2_coords.top) + ' ' + str(racket2_coords.bottom)
         c.send(reply.encode())
 
         #reception
@@ -211,19 +220,33 @@ while True:
     # Racket reached racket position?
     if ball_coords.left <= 0:
         if ball_coords.bottom <= racket_coords.top or ball_coords.top >= racket_coords.bottom:
-            print("lost!")
+            if serveur :
+                print("lost!")
+            else:
+                print("win!")
+            score2 += 1
             throw()
 
     if ball_coords.right >= width:
         if ball_coords.bottom <= racket2_coords.top or ball_coords.top >= racket2_coords.bottom:
-            print("win!")
+            if serveur :
+                print("win!")
+            else:
+                print("lost!")
+            score1 += 1
             throw()
+
+    textsurface = myfont.render(str(score1) + ' | ' + str(score2), True, (255, 255, 255))
+    text_coords = textsurface.get_rect()
+    text_coords.left = width/2 - text_coords.width/2
+    text_coords.top = 10
 
     # Display everything
     screen.fill(clay)
     screen.blit(ball, ball_coords)
     screen.blit(racket, racket_coords)
     screen.blit(racket2, racket2_coords)
+    screen.blit(textsurface, text_coords)
     pygame.display.flip()
 
     # sleep 10ms, since there is no need for more than 100Hz refresh :)
