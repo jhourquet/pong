@@ -31,12 +31,10 @@ import socket
 
 # Screen setup
 
-width = 800
-height = 600
+width = 1280
+height = 720
 
-clay = (0xFF, 0x40, 0)
-
-ball_speed = [ -4, -4 ]
+ball_speed = [ -20, -20 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
 
@@ -76,10 +74,12 @@ if serveur :
 else :
     pygame.display.set_caption('Client')
 
-myfont = pygame.font.SysFont(None, 50)
+myfont = pygame.font.SysFont(None, 75)
 
 
 # Load resources
+court = pygame.image.load("image/court.png")
+
 ball = pygame.image.load("image/ball.png")
 ball_coords = ball.get_rect()
 
@@ -106,15 +106,15 @@ while True:
         elif e.type == pygame.KEYDOWN:
             if e.key == pygame.K_UP:
                 if serveur :
-                    racket_speed[1] = -4
+                    racket_speed[1] = -15
                 else :
-                    racket2_speed[1] = -4
+                    racket2_speed[1] = -15
                 pass
             elif e.key == pygame.K_DOWN:
                 if serveur :
-                    racket_speed[1] = 4
+                    racket_speed[1] = 15
                 else :
-                    racket2_speed[1] = 4
+                    racket2_speed[1] = 15
                 pass
 
         elif e.type == pygame.KEYUP:
@@ -236,13 +236,13 @@ while True:
             score1 += 1
             throw()
 
-    textsurface = myfont.render(str(score1) + ' | ' + str(score2), True, (255, 255, 255))
+    textsurface = myfont.render(str(score1) + ' | ' + str(score2), True, (0, 0, 0))
     text_coords = textsurface.get_rect()
     text_coords.left = width/2 - text_coords.width/2
     text_coords.top = 10
 
     # Display everything
-    screen.fill(clay)
+    screen.blit(court, (0,0))
     screen.blit(ball, ball_coords)
     screen.blit(racket, racket_coords)
     screen.blit(racket2, racket2_coords)
