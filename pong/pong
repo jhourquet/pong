@@ -31,10 +31,10 @@ import socket
 
 # Screen setup
 
-width = 1280
-height = 720
+width = 768
+height = 480
 
-ball_speed = [ -20, -20 ]
+ball_speed = [ -5, -5 ]
 racket_speed = [ 0, 0 ]
 racket2_speed = [ 0, 0 ]
 
@@ -106,15 +106,15 @@ while True:
         elif e.type == pygame.KEYDOWN:
             if e.key == pygame.K_UP:
                 if serveur :
-                    racket_speed[1] = -15
+                    racket_speed[1] = -6
                 else :
-                    racket2_speed[1] = -15
+                    racket2_speed[1] = -6
                 pass
             elif e.key == pygame.K_DOWN:
                 if serveur :
-                    racket_speed[1] = 15
+                    racket_speed[1] = 6
                 else :
-                    racket2_speed[1] = 15
+                    racket2_speed[1] = 6
                 pass
 
         elif e.type == pygame.KEYUP:
@@ -236,7 +236,7 @@ while True:
             score1 += 1
             throw()
 
-    textsurface = myfont.render(str(score1) + ' | ' + str(score2), True, (0, 0, 0))
+    textsurface = myfont.render(str(score1) + '   ' + str(score2), True, (255, 255, 255))
     text_coords = textsurface.get_rect()
     text_coords.left = width/2 - text_coords.width/2
     text_coords.top = 10
